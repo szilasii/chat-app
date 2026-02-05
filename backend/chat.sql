@@ -49,9 +49,11 @@ End;
 insert into users values (null, "teszt1@gmail.com","titok",null),
 (null,"teszt2@gmail.com","jelszo",null)
 
+insert into users values (null, "teszt3@gmail.com","titok",null)
+
 select login("teszt2@gmail.com","jelszo");
 
-create table chatroom (
+create table chatrooms (
     roomId integer AUTO_INCREMENT PRIMARY key,
     name VARCHAR(25) not null,
     owner integer not null,
@@ -61,16 +63,33 @@ create table chatroom (
 create table messages (
     messageId integer AUTO_INCREMENT primary key,
     message varchar(50) not null,
-    messageType varchar(50) default "text" not null,
+    messageType ENUM("Text","File","Picture","Video") default "Text" not null,
     fileId VARCHAR(255) default null,
     sender integer not null,
     roomId integer not null,
     Foreign Key (sender) REFERENCES users(userId) on delete CASCADE,
     Foreign Key (roomId) REFERENCES chatroom(roomId) on delete CASCADE,
-    Foreign Key (messageType) REFERENCES messageTypes(type) on delete cascade,
     Foreign key (fileId) REFERENCES files(fileId) on delete cascade
 )
 
-create table messageTypes (
-    type varchar(50) primary key UNIQUE
+create table members (
+    roomId integer,
+    userId integer,
+    Foreign Key (roomId) REFERENCES chatrooms(roomId)on delete cascade,
+    Foreign Key (userId) REFERENCES users(userId) on delete cascade
 )
+
+
+insert into chatrooms values (null,"Teszt1 szoba",1)
+
+insert into chatrooms values (null,"Teszt2 szoba",2)
+
+insert into chatrooms values (null,"Teszt3 szoba",3)
+
+insert into members values (1,1);
+insert into members values (1,2);
+insert into members values (1,3);
+insert into members values (2,1);
+insert into members values (2,3);
+
+select chatrooms.roomId, name from members join chatrooms on chatrooms.`roomId` = members.`roomId` where members.userId = 1;

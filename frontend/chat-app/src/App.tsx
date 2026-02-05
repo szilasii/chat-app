@@ -8,7 +8,7 @@ import {
 import { ReactNode } from "react";
 
 import LoginPage  from "./pages/login"
-import { MessagesPage } from "./pages/messages"
+import MessagesPage  from "./pages/messages"
 
 
 

@@ -3,6 +3,7 @@ import router from "../routes/routes"
 
 import userRouter from "../user/routes"
 import uploadRouter from "../upload/routes"
+import roomsRouter from "../rooms/routes"
 import cors from "cors"
 import bodyParser from "body-parser"
 
@@ -17,6 +18,7 @@ app.use('/',router)
 
 app.use('/',userRouter)
 app.use('/',uploadRouter)
+app.use('/',roomsRouter)
 
 export default app
 

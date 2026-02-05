@@ -76,3 +76,6 @@ export const changeAvatar =  async (req:any,res:any) => {
              })
          }
 }
+export const getAllUser = () => {
+    
+}
