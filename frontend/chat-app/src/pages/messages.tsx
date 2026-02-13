@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateRoomModal from "../components/CreateRoomModal";
-import ChatLayout from "../components/chatLayout";
+import ChatLayout from "../components/ChatLayout";
+import Navbar from "../components/navbar";
 
 export default function MessagesPage() {
   const [showCreateRoom, setShowCreateRoom] = useState(false);
@@ -11,41 +12,76 @@ export default function MessagesPage() {
 
   const openModal = () => setShowCreateRoom(true);
   const closeModal = () => setShowCreateRoom(false);
+  const token = localStorage.getItem("authToken");
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/users", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": `${token}`,
+          }
+        });
+
+        const data = await res.json();
+        setUsers(data.users); // API-tól függően lehet data.users
+      } catch (err) {
+        console.error("User fetch error:", err);
+      }
+    };
+
+    fetchUsers();
+
+  }, [token]);
+
+
+
+
+  useEffect(() => {
+    fetch("http://localhost:3000/rooms", {
+      headers: {
+        "x-access-token": `${token}`,
+      },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        setRooms(data.rooms);
+      })
+      .catch((err) => {
+        console.error("Rooms fetch error:", err);
+      });
+  }, [token]);
 
   const handleRoomCreated = (room: any) => {
     setRooms(prev => [...prev, room]);
   };
 
   return (
-    <><div className="p-4">
+    <>
+
+      <Navbar />
+
+
+      {showCreateRoom && (
+        <CreateRoomModal
+          members={users}
+          onClose={closeModal}
+          onRoomCreated={handleRoomCreated}
+        />
+      )}
+      <div className="p-4 flex justify-between items-center">
           <button
-              onClick={openModal}
-              className="px-4 py-2 bg-blue-600 text-white rounded"
+            onClick={openModal}
+            className="px-4 py-2 bg-blue-600 text-white rounded"
           >
-              + Új szoba
+            + Új szoba
           </button>
-
-          {showCreateRoom && (
-              <CreateRoomModal
-                  members={users}
-                  onClose={closeModal}
-                  onRoomCreated={handleRoomCreated} />
-          )}
-
-          {/* A szobák listája */}
-          <div className="mt-4">
-              {rooms.map(r => (
-                  <div key={r.roomId} className="p-2 border rounded mb-2">
-                      {r.name}
-                  </div>
-              ))}
-          </div>
-      </div><div className="h-screen bg-gray-100">
-              <ChatLayout />
-          </div></>
+        </div>
+      <div className="h-screen bg-gray-100">
+        <ChatLayout rooms={rooms} />
+        
+      </div>
+    </>
   );
-  
 }
-
-
-

@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 
-interface User {
-  id: number;
-  username: string;
-}
+
 
 interface CreateRoomModalProps {
-  members: User[];
+  members: any,
   onClose: () => void;
   onRoomCreated: (room: any) => void;
 }
@@ -17,19 +14,21 @@ export default function CreateRoomModal({
   onClose,
   onRoomCreated,
 }: CreateRoomModalProps) {
+
   const [roomName, setRoomName] = useState("");
   const [selectedMembers, setSelectedMembers] = useState<number[]>([]);
-
+  const token = localStorage.getItem("authToken");
   const toggleMember = (id: number) => {
     setSelectedMembers(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter(x => x !== id)
+        : [...prev, id]
     );
   };
 
+
   const createRoom = async () => {
     if (!roomName.trim()) return alert("Add meg a szoba nevét!");
-
-    const token = localStorage.getItem("authToken");
 
     const res = await fetch("http://localhost:3000/rooms", {
       method: "POST",
@@ -46,7 +45,7 @@ export default function CreateRoomModal({
     const data = await res.json();
 
     if (res.ok) {
-      onRoomCreated(data);
+      onRoomCreated(data.room);
       onClose();
     } else {
       alert(data.error || "Hiba történt!");
@@ -70,15 +69,15 @@ export default function CreateRoomModal({
         <p className="font-semibold mb-2">Tagok:</p>
 
         <div className="max-h-40 overflow-auto border p-2 rounded">
-          {members.map(m => (
-            <label key={m.id} className="block">
+          {members.map((m: any) => (
+            <label key={m.userId} className="block">
               <input
                 type="checkbox"
                 className="mr-2"
-                checked={selectedMembers.includes(m.id)}
-                onChange={() => toggleMember(m.id)}
+                checked={selectedMembers.includes(m.userId)}
+                onChange={() => toggleMember(m.userId)}
               />
-              {m.username}
+              {m.name}
             </label>
           ))}
         </div>

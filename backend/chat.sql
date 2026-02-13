@@ -19,6 +19,11 @@ email varchar(100) not null UNIQUE,
 password varchar(255) not null,
 avatar varchar(255) null,
 Foreign Key (avatar) REFERENCES files(fileId) on delete CASCADE);
+alter table users add name varchar(100);
+update users set name = "Teszt1" where `userId` = 1;
+update users set name = "Teszt2" where `userId` = 2;
+update users set name = "Teszt3" where `userId` = 3;
+
 
 create table userFiles (
     userId integer not null,

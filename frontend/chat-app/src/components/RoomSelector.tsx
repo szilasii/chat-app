@@ -1,32 +1,24 @@
-import { Key, useState } from "react";
+import { Key } from "react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export default function RoomSelector({
+  rooms,
   currentRoom,
   onChange,
 }: {
+  rooms:any;
   currentRoom: string;
-  onChange: (room: string) => void;
+  onChange: (roomName: string) => void;
 }) {
-  const [rooms, setRooms] = useState([]);
-  const token = localStorage.getItem("authToken");
-  
-
-  fetch("http://localhost:3000/rooms", {
-    headers: {
-      "x-access-token": `${token}`,
-    },
-  })
-    .then((r) => r.json())
-    .then((data) => {
-      setRooms(data.rooms);
-    });
-  
     return (
     <div className="w-1/5 bg-white border-r p-4">
       <h2 className="text-xl font-bold mb-4">Chat szobák</h2>
-
-      {rooms.map((r:{roomId: Key | null | undefined,name: string}) => (
+      {rooms.rooms.length === 0 ? 
+      (
+         <p className="text-gray-500 italic">Nincs egyetlen szoba sem</p>
+      ): (
+      
+      rooms.rooms.map((r:{roomId: Key | null | undefined,name: string}) => (
         <div
           key={r.roomId}
           onClick={() => onChange(r.name)}
@@ -35,7 +27,8 @@ export default function RoomSelector({
         >
           #{r.name}
         </div>
-      ))}
+      )))}
+     
     </div>
   );
 }

@@ -12,9 +12,9 @@ import { motion } from "framer-motion";
 // --- Login Page ---
 export default function LoginPage() {
     const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // hibák megjelenítéséhez
-  const navigate = useNavigate();
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState(""); // hibák megjelenítéséhez
+    const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -100,6 +100,15 @@ export default function LoginPage() {
                                     Belépés
                                 </Button>
                             </motion.div>
+                            <p className="mt-4 text-white/90 text-sm">
+                                Még nincs fiókod?{" "}
+                                <span
+                                    className="underline cursor-pointer"
+                                    onClick={() => navigate("/signup")}
+                                >
+                                    Regisztrálj!
+                                </span>
+                            </p>
                         </form>
                     </CardContent>
                 </Card>

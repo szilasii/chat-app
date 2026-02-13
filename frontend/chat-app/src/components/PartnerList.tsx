@@ -15,7 +15,7 @@ export default function PartnerList({
 }: PartnerListProps) {
   return (
     <div className="w-1/4 bg-white border-r overflow-y-auto">
-      <h2 className="p-4 text-xl font-bold border-b">Partnerek</h2>
+      <h2 className="p-4 text-xl font-bold border-b">Partnerek</h2>sgsg
 
       {partners.map((p) => (
         <div

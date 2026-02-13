@@ -13,24 +13,26 @@ export class Room implements IRoom {
     constructor(init: IRoom) {
         Object.assign(this, init as Partial<IRoom>)
     }
-
+    getRoomData() {
+        return {roomId: this.roomId,name: this.name, owner: this.owner}
+    }
     async saveToDatabase(members?: number[]) {
-
-
         const connection = await mysql.createConnection(config.database);
 
         try {
             const [results]: any = await connection.query(
-                "insert into chatRooms values (?.?,?)", [this.name, this.owner])
+                "insert into chatrooms values (?,?,?)", [null,this.name, this.owner])
             if (results.insertId === 0) {
                 throw "Hiba a ChatRooms táblába történő mentéskor!"
             }
-
+            this.roomId = results.insertId
+              console.log(members)
             if (members && members.length > 0) {
+                members.push(this.owner)
                 await Promise.all(
                     members.map(async (member: number ) => {
                         const [results]: any = await connection.query(
-                            "INSERT INTO member (roomId, userId) VALUES (?, ?)",
+                            "INSERT INTO members (roomId, userId) VALUES (?, ?)",
                             [this.roomId, member]
                         );
                         return results;

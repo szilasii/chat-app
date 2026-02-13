@@ -25,6 +25,9 @@ export const getFileList = async (req: any, res: any) => {
     } catch (err) {
         console.log(err)
     }
+    finally {
+        connection.end()
+    }
 
 
 
@@ -52,6 +55,7 @@ export const downloadFile = async  (req: any, res: any) => {
     const [results]: any = await connection.query(
         "Select fileName from files where fileId=? ", [fileId]
     )
+    connection.end()
     if (results.length === 0) {
         return res.status(500).send("Nincs meg a file!")
     }

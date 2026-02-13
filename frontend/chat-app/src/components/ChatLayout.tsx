@@ -3,27 +3,20 @@ import { useEffect, useRef, useState } from "react";
 import RoomSelector from "./RoomSelector";
 import ChatWindow from "./ChatWindow";
 
-export default function ChatLayout() {
+export default function ChatLayout(rooms: any[]) {
   const [messages, setMessages] = useState<any[]>([]);
   const [room, setRoom] = useState("general");
   const socketRef = useRef<WebSocket | null>(null);
   const token = localStorage.getItem("authToken");
 
   useEffect(() => {
-    socketRef.current = new WebSocket("ws://localhost:3000");
-
+    socketRef.current = new WebSocket(`ws://localhost:8080?token=${token}`);
     socketRef.current.onopen = () => {
-      socketRef.current?.send(
-        JSON.stringify({
-          type: "auth",
-          token,
-          room,
-        })
-      );
     };
 
     socketRef.current.onmessage = (msg) => {
       const data = JSON.parse(msg.data);
+      console.log(msg.data)
 
       if (data.type === "message" && data.room.name === room) {
         setMessages((prev) => [...prev, data]);
@@ -31,7 +24,7 @@ export default function ChatLayout() {
     };
 
     return () => socketRef.current?.close();
-  }, [room]);
+  }, [room, token]);
 
   const sendMessage = (text: string) => {
     socketRef.current?.send(
@@ -60,7 +53,7 @@ export default function ChatLayout() {
 
   return (
     <div className="flex h-full">
-      <RoomSelector currentRoom={room} onChange={setRoom} />
+      <RoomSelector currentRoom={room} rooms = { rooms } onChange={setRoom} />
 
       <ChatWindow
         messages={messages}

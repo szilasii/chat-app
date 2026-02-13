@@ -68,7 +68,7 @@ export class Message implements IMessage {
                     file.setData(messageFile, results.insertId)
                     file.deleteFileDir()
                 }
-                throw "Hiba a Files táblába történő mentéskor!"
+                throw "Hiba a message táblába történő mentéskor!"
             }
 
             if (messageFile) {

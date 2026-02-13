@@ -5,6 +5,7 @@ import { IMulterFile, File } from "../file/file"
 export interface IUser {
     userId?: number | null
     email: string
+    name: string
     password: string
     avatar?: string
 }
@@ -12,6 +13,7 @@ export interface IUser {
 export class User implements IUser {
     userId?: number | null = null
     email: string = ""
+    name: string = ""
     password: string = ""
     avatar?: string
     constructor(init?: Partial<User>) {
@@ -27,14 +29,18 @@ export class User implements IUser {
         return user
     }
     async loadDataFromDb(userId: number) {
+        const connection = await mysql.createConnection(config.database)
         try {
-            const connection = await mysql.createConnection(config.database)
+            
             const [results]:any = await connection.query(
-                "select userId, email, avatar from users where userId=?", [userId])
+                "select userId, email, name, avatar from users where userId=?", [userId])
             Object.assign(this, results[0] as Partial<User>)
 
         } catch (err) {
             throw err
+        }
+        finally{
+            connection.end
         }
 
     }
@@ -61,6 +67,9 @@ export class User implements IUser {
         } catch (err) {
             throw err
         }
+        finally {
+            connection.end()
+        }
 
     }
 
@@ -69,7 +78,7 @@ export class User implements IUser {
         const file = new File()
         try {
             const [results]: any = await connection.query(
-                "insert into users (email,password) values (?,?)", [this.email, this.password])
+                "insert into users (email, name, password) values (?,?,?)", [this.email, this.name, this.password])
             if (results.insertId === 0) {
                 if (avatar) {
                     file.setData(avatar, results.insertId)
@@ -89,6 +98,9 @@ export class User implements IUser {
         } catch (err) {
             this.avatar = ""
             throw err
+        }
+        finally {
+            connection.end()
         }
     }
 }

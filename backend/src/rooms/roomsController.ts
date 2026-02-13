@@ -4,15 +4,16 @@ import { Room } from "./room"
 export const addChatRooms = async (req:any, res:any) => {
     const userId = req.user.userId
     const roomName = req.body.name
+    const members = req.body.members
 
-    if (!roomName) {
+    if (!roomName || !members) {
            return res.status(404).send({ error: "Nem megfelelően megadott adatok!" })
 
     }
     const room = new Room({"roomId": null,"name": roomName, "owner":userId })
     try {
-        room.saveToDatabase()
-        return res.status(200).send({ room: room })
+        await room.saveToDatabase(members)
+        return res.status(200).send({ room: room.getRoomData() })
     }
     catch (err) {
         res.status(500).send({error: err})

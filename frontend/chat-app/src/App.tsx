@@ -9,6 +9,7 @@ import { ReactNode } from "react";
 
 import LoginPage  from "./pages/login"
 import MessagesPage  from "./pages/messages"
+import SignupPage from "./pages/signup";
 
 
 
@@ -27,6 +28,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route
           path="/messages"
           element={

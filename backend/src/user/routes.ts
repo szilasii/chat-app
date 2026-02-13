@@ -6,5 +6,5 @@ const router: Router = Router()
 router.post('/user/signin',signIn)
 router.post('/user/signup',signUp)
 router.put('/user/avatar',verifyToken,changeAvatar)
-router.get('/user',verifyToken,getAllUser)
+router.get('/users',verifyToken,getAllUser)
 export default router

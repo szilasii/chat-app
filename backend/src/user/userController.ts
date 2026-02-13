@@ -36,7 +36,7 @@ export const signUp = async (req: any, res: any) => {
 
     const userBody: Partial<User> = req.body
     
-    if (!userBody.email || !userBody.password) {
+    if (!userBody.email || !userBody.password || !userBody.name) {
 
         new File(req.file).deleteFileDir()
         return res.status(400).send("Nem adott meg minden adatot!!")
@@ -76,6 +76,21 @@ export const changeAvatar =  async (req:any,res:any) => {
              })
          }
 }
-export const getAllUser = () => {
-    
+export const getAllUser = async (req:any,res:any) => {
+    const connection = await mysql.createConnection(config.database)
+    try {
+        const [results] = await connection.query('select userId, email, name, avatar from users where not userId = ?', [req.user.userId]) as Array<any>
+
+        if (results.length === 0) {
+            return res.status(404).send({ error: "Nem található felhasználó" })
+        }
+        
+        res.status(200).send({ users: results })
+    } catch (e) {
+        console.log(e)
+        return res.status(500).send({ error: "Hiba a felhasználók listájának lekérdezésekor!" })
+    }
+    finally {
+        connection.end()
+    }
 }
