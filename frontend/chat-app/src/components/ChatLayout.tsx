@@ -5,7 +5,7 @@ import ChatWindow from "./ChatWindow";
 
 export default function ChatLayout(rooms: any[]) {
   const [messages, setMessages] = useState<any[]>([]);
-  const [room, setRoom] = useState("general");
+  const [room, setRoom] = useState({roomId:1, name:"General"});
   const socketRef = useRef<WebSocket | null>(null);
   const token = localStorage.getItem("authToken");
 
@@ -18,7 +18,7 @@ export default function ChatLayout(rooms: any[]) {
       const data = JSON.parse(msg.data);
       console.log(msg.data)
 
-      if (data.type === "message" && data.room.name === room) {
+      if (data.type === "message" && data.room.roomId === room.roomId) {
         setMessages((prev) => [...prev, data]);
       }
     };
@@ -53,7 +53,7 @@ export default function ChatLayout(rooms: any[]) {
 
   return (
     <div className="flex h-full">
-      <RoomSelector currentRoom={room} rooms = { rooms } onChange={setRoom} />
+      <RoomSelector currentRoom={room.roomId} rooms = { rooms } onChange={setRoom} />
 
       <ChatWindow
         messages={messages}

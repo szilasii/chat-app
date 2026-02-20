@@ -13,7 +13,7 @@ export default function ChatWindow({ messages, room, sendMessage }: any) {
   return (
     <div className="flex flex-col flex-1">
       <div className="p-4 border-b bg-white text-xl font-semibold">
-        #{room} szoba
+        #{room.name} szoba
       </div>
 
       <div className="flex-1 p-4 space-y-3 overflow-y-auto bg-gray-100">

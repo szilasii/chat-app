@@ -7,8 +7,8 @@ export default function RoomSelector({
   onChange,
 }: {
   rooms:any;
-  currentRoom: string;
-  onChange: (roomName: string) => void;
+  currentRoom: number;
+  onChange: (room:any ) => void;
 }) {
     return (
     <div className="w-1/5 bg-white border-r p-4">
@@ -21,9 +21,9 @@ export default function RoomSelector({
       rooms.rooms.map((r:{roomId: Key | null | undefined,name: string}) => (
         <div
           key={r.roomId}
-          onClick={() => onChange(r.name)}
+          onClick={() => onChange(r)}
           className={`p-3 rounded cursor-pointer mb-2 capitalize
-            ${r.name === currentRoom ? "bg-blue-100 font-semibold" : "hover:bg-gray-100"}`}
+            ${r.roomId === currentRoom ? "bg-blue-100 font-semibold" : "hover:bg-gray-100"}`}
         >
           #{r.name}
         </div>

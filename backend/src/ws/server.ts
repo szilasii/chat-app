@@ -2,8 +2,9 @@ import { WebSocketServer } from "ws"
 import jwt from "jsonwebtoken";
 import { config } from "../config/config"
 import { User } from "../user/user" 
+import { Message, Messages } from "../messages/message";
 
-const wss = new WebSocketServer({ port: 8080 })
+const wss = new WebSocketServer({ port: 8081 })
 const clients = new Set()
 wss.on("connection", async (ws, req) => {
 
@@ -24,13 +25,23 @@ wss.on("connection", async (ws, req) => {
         const user: User = new User()
         await user.loadDataFromDb(tUser.userId)
         clients.add({userId: user.userId, socket: ws}) // bármikor elérhető!
-        
         ws.send(JSON.stringify({ type: "auth_ok", user: user }));
     } catch (err) {
         ws.close(4002, "Érvénytelen token");
     }
 
-    ws.on("message", (msg) => {
+    ws.on("message", async (msg:any) => {
+        console.log(msg)
+        switch (msg.type) {
+            case "getMessage": 
+                const messages = new Messages(await Messages.loadDataFromDb(msg.roomid))
+                ws.send(JSON.stringify({ type: "messages", messages: messages }));
+            
+            case "message": 
+                const message = new Message()
+            default : ""
+        }
+
         console.log("Üzenet:", msg.toString());
     });
 })

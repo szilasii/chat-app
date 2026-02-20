@@ -29,14 +29,18 @@ export class Message implements IMessage {
         }
 
     async loadDataFromDb(messageId: number) {
+        const connection = await mysql.createConnection(config.database)
         try {
-            const connection = await mysql.createConnection(config.database)
+           
             const [results]:any = await connection.query(
                 "select * from messages where messageId=?", [messageId])
             Object.assign(this, results[0] as Partial<Message>)
 
         } catch (err) {
             throw err
+        }
+        finally {
+            connection.end()
         }
 
     }
@@ -51,6 +55,8 @@ export class Message implements IMessage {
                 }
             } catch (err) {
                 throw err
+            } finally {
+                connection.end()
             }
     
         }
@@ -85,4 +91,29 @@ export class Message implements IMessage {
         }
     }        
 
+}
+
+export class Messages {
+    messages : IMessage[] = []
+    constructor (messages:[]) {
+        
+        this.messages.push(...messages)
+    }
+    private static async loadDataFromDb(roomId:number)
+    {
+        const connection = await mysql.createConnection(config.database);
+         try {
+           
+            const [results]:any = await connection.query(
+                "select * from messages where roomId=?", [roomId])            
+                return results as IMessage[]
+
+        } catch (err) {
+            throw err
+        }
+        finally {
+            connection.end()
+        }
+        
+    }
 }
